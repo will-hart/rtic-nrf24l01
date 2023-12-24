@@ -160,9 +160,10 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
             self.to_state(State::Rx, spi, delay)?;
         }
 
-        if buffer.len() > MAX_FIFO_SIZE {
-            return Err(Error::InvalidBufferSize);
-        }
+        // WH: this constant is not defined anywhere
+        // if buffer.len() > MAX_FIFO_SIZE {
+        // return Err(Error::InvalidBufferSize);
+        // }
 
         let mut buffer_idx = 0;
         let mut iteration = 0;

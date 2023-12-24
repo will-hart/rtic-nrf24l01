@@ -210,9 +210,9 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
 
                 let mut status = self.read_status(spi)?;
 
-                while status.contains_status(StatusRegister::TxFull) {
+                while status.contains_status(FifoStatusRegister::TxFull) {
                     delay.delay_us(1_000u32);
-                    
+
                     status = self.read_status(spi)?;
                 }
             }
@@ -248,7 +248,7 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
 
                 let mut status = self.read_status(spi)?;
 
-                while status.contains_status(StatusRegister::TxFull) {
+                while status.contains_status(FifoStatusRegister::TxFull) {
                     delay.delay_us(1_000u32);
 
                     status = self.read_status(spi)?;
@@ -466,7 +466,11 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
             self.read_register(register, &mut found_config, spi)?;
 
             if found_config[0] != config[0] {
-                return Err(Error::UnableToConfigureRegister(register));
+                return Err(Error::UnableToConfigureRegister(
+                    register,
+                    config[0],
+                    found_config[0],
+                ));
             }
         }
 
@@ -480,7 +484,11 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
 
                 for i in 0..pipe_config.address.len() {
                     if pipe_config.address[i] != found_config[i] {
-                        return Err(Error::UnableToConfigureRegister(register));
+                        return Err(Error::UnableToConfigureRegister(
+                            register,
+                            pipe_config.address[i],
+                            found_config[i],
+                        ));
                     }
                 }
             }
@@ -499,7 +507,11 @@ impl<'a, GPIOE, SPIE, CSN, CE, SPI, DELAY> NRF24L01<'a, GPIOE, SPIE, CSN, CE, SP
             self.read_register(register, &mut found_config, spi)?;
 
             if found_config[0] != config[0] {
-                return Err(Error::UnableToConfigureRegister(register));
+                return Err(Error::UnableToConfigureRegister(
+                    register,
+                    config[0],
+                    found_config[0],
+                ));
             }
         }
 
